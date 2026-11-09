@@ -365,7 +365,10 @@ void parse(const char *p_path, const service_ptr_t<file> &p_file, playlist_loade
 			if (!workingDirSet)
 			{
 				// Set the working directory to the path of the playlist, so that we correctly construct the absolute path
-				basePath = playlistPath.substr(7, playlistPath.find_last_of("\\") - 6);
+				const auto separator = playlistPath.find_last_of("\\/");
+				if (separator == std::string::npos) throw exception_io_data();
+				basePath = playlistPath.substr(0, separator + 1);
+				if (basePath.compare(0, 7, "file://") == 0) basePath.erase(0, 7);
 				workingDirSet = true;
 			}
 
@@ -433,7 +436,7 @@ void write_playlist(const char *p_path, const service_ptr_t<file> &p_file, metad
 		auto trackPath = std::string(track->get_path());
 
 		// remove file:// from the path
-		trackPath = trackPath.substr(7);
+		if (trackPath.compare(0, 7, "file://") == 0) trackPath.erase(0, 7);
 
 #ifdef DEBUG
 		console::printf(CONSOLE_HEADER "Adding %s to playlist file", trackPath);
@@ -481,6 +484,7 @@ void xmlAddAttribute(tinyxml2::XMLElement *xml_element, const char *attribute_na
 // If the specified attribute doesn't exist, an io_data-exception is thrown.
 const char* xmlGetAttribute(const tinyxml2::XMLElement *xml_element, const char *attribute_name)
 {
+	if (xml_element == nullptr) throw exception_io_data();
 	const char *xml_attribute = xml_element->Attribute(attribute_name);
 
 	if(xml_attribute == nullptr)
@@ -519,6 +523,7 @@ void xmlAddMeta(tinyxml2::XMLDocument *xml_doc, tinyxml2::XMLNode *xml_parent_no
 // If there are no elements with the specified name, an io_data-exception is thrown.
 const tinyxml2::XMLElement* xmlGetElement(const tinyxml2::XMLNode *xml_node, const char *element_name)
 {
+	if (xml_node == nullptr) throw exception_io_data();
 	const tinyxml2::XMLElement *xml_element = xml_node->FirstChildElement(element_name);
 
 	if(xml_element == nullptr)
