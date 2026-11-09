@@ -48,7 +48,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\lib\foobar2000_sdk\foobar2000\foobar2000_component_client\foobar2000_component_client.vcxproj" />
-    <ProjectReference Include="..\lib\foobar2000_sdk\foobar2000\helpers\foobar2000_sdk_helpers.vcxproj" />
     <ProjectReference Include="..\lib\foobar2000_sdk\foobar2000\SDK\foobar2000_SDK.vcxproj" />
     <ProjectReference Include="..\lib\foobar2000_sdk\pfc\pfc.vcxproj" />
   </ItemGroup>
