@@ -5,6 +5,7 @@
 #include <map>
 #include <set>
 
+#include <winsock2.h>
 #include <Shlwapi.h>
 #include "../lib/foobar2000_sdk/foobar2000/SDK/foobar2000.h"
 #include "../lib/tinyxml2/tinyxml2.h"
