@@ -1,0 +1,49 @@
+name: Build WPL x64
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-2022
+    steps:
+      - name: Check out WPL source
+        uses: actions/checkout@v4
+
+      - name: Fetch foobar2000 SDK (2026-10-01)
+        shell: pwsh
+        run: |
+          git clone --depth 1 --branch SDK-2026-10-01 https://github.com/reupen/foobar2000-sdk-unmodified.git lib/foobar2000_sdk
+
+      - name: Fetch TinyXML-2
+        shell: pwsh
+        run: |
+          git clone --depth 1 --branch 10.1.0 https://github.com/leethomason/tinyxml2.git lib/tinyxml2
+
+      - name: Configure MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Build SDK shared import library
+        shell: pwsh
+        run: |
+          msbuild lib/foobar2000_sdk/foobar2000/shared/shared.vcxproj /m /p:Configuration=Release /p:Platform=x64
+
+      - name: Build foo_wpl x64
+        shell: pwsh
+        run: |
+          msbuild src/foo_wpl.vcxproj /m /p:Configuration=Release /p:Platform=x64 /verbosity:minimal
+
+      - name: Package foobar2000 component
+        shell: pwsh
+        run: |
+          if (!(Test-Path build/x64/foo_wpl.dll)) { throw "Expected build/x64/foo_wpl.dll" }
+          New-Item -ItemType Directory -Force dist | Out-Null
+          Compress-Archive -Path build/x64/foo_wpl.dll -DestinationPath dist/foo_wpl_x64.fb2k-component
+
+      - name: Upload installable component
+        uses: actions/upload-artifact@v4
+        with:
+          name: foo_wpl_x64
+          path: dist/foo_wpl_x64.fb2k-component
