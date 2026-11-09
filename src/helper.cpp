@@ -467,9 +467,9 @@ void xmlCreateDocument(tinyxml2::XMLDocument *xml_doc, const char *f)
 {
 	const tinyxml2::XMLError error = xml_doc->Parse(f);
 
-	if(error != tinyxml2::XML_NO_ERROR)
+	if(error != tinyxml2::XML_SUCCESS)
 	{
-		console::printf(CONSOLE_HEADER "XML parse error, ID: %d, Msg: %s", error, xml_doc->GetErrorStr1());
+		console::printf(CONSOLE_HEADER "XML parse error, ID: %d, Msg: %s", error, xml_doc->ErrorStr());
 		throw exception_io_data();
 	}
 }
