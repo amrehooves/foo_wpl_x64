@@ -5,6 +5,9 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: windows-2022
@@ -53,3 +56,11 @@ jobs:
         with:
           name: foo_wpl_x64
           path: dist/foo_wpl_x64.fb2k-component
+
+      - name: Publish initial x64 release
+        if: github.event_name == 'push' && contains(github.event.head_commit.message, '[publish-release]')
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create v1.2.3-x64.1 dist/foo_wpl_x64.fb2k-component --title "WPL Playlist Support 1.2.3 x64 (foobar2000 v2)" --notes-file RELEASE_NOTES.md --target "$env:GITHUB_SHA"
