@@ -22,6 +22,11 @@ jobs:
         run: |
           git clone --depth 1 --branch 10.1.0 https://github.com/leethomason/tinyxml2.git lib/tinyxml2
 
+      - name: Fetch Windows Template Library (WTL)
+        shell: pwsh
+        run: |
+          git clone --depth 1 https://github.com/Win32-WTL/WTL.git lib/WTL
+
       - name: Configure MSBuild
         uses: microsoft/setup-msbuild@v2
 
@@ -33,6 +38,7 @@ jobs:
       - name: Build foo_wpl x64
         shell: pwsh
         run: |
+          $env:CL = '/I"' + (Resolve-Path lib/WTL/Include).Path + '"'
           msbuild src/foo_wpl.vcxproj /m /p:Configuration=Release /p:Platform=x64 /verbosity:minimal
 
       - name: Package foobar2000 component
