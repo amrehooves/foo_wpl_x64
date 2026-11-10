@@ -1,4 +1,10 @@
-# foo_wpl
+# Disclaimer 
+I am not a coder, just someone who needed a quick solution for importing and exporting .wpl playlists into foobar2k. This plugin has been ported using AI.
+This repository will not be maintained further, all credits go to UrbanCMC's original foo_wpl plugin.
+
+## Original description below
+
+## foo_wpl
 WPL playlist plugin for foobar2000 v1.3+
 
 WPL is an XML-based playlist format used by applications like the Windows Media Player.
